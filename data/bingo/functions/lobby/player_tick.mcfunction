@@ -22,6 +22,12 @@ execute at @s unless block ~ ~ ~ minecraft:void_air run effect clear @s minecraf
 
 # generate card from seed
 execute if score @s bingo.seed matches -2147483648.. unless score @s bingo.seed matches 0 run function bingo:card_generation/generate_from_seed
+
+#MCGEE_ADDITION
+scoreboard objectives add mcgee dummy
+execute if score @s bingo.seed matches -2147483648.. unless score @s bingo.seed matches 0 run scoreboard players set seeded_run mcgee 1
+#END_MCGEE_ADDITION
+
 scoreboard players reset @s bingo.seed
 execute unless score $strict_mode bingo.settings matches 1 run scoreboard players enable @s bingo.seed
 execute if score @s bingo.operator matches 1 run scoreboard players enable @s bingo.seed

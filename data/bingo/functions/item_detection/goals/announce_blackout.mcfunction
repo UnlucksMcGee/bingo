@@ -8,3 +8,10 @@ tellraw @a {"translate": "bingo.got_blackout", "with": [{"storage": "neun_einser
 execute as @a[tag=bingo.in_current_team] at @s run function bingo:item_detection/goals/completed_goal_effects
 
 tag @a[tag=bingo.in_current_team] add bingo.spectator
+
+#MCGEE_ADDITION
+# Bingo Type
+## Blackout Bingo
+scoreboard players set bit4 mcgee 1
+scoreboard players set bit2 mcgee 1
+#END_MCGEE_ADDITION

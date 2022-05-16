@@ -10,3 +10,8 @@ execute if score $item_detect/announce.items bingo.tmp matches 5 run tellraw @a 
 execute as @a[tag=bingo.in_current_team] at @s run function bingo:item_detection/goals/completed_goal_effects
 
 data modify storage bingo:card teams[-1].hasBingo set value true
+
+#MCGEE_ADDITION
+# Bingo Type
+## Single Bingo
+#END_MCGEE_ADDITION

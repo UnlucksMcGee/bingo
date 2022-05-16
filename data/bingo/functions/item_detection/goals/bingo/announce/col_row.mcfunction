@@ -10,3 +10,9 @@ execute if score $item_detect/announce.items bingo.tmp matches 9 run tellraw @a 
 execute as @a[tag=bingo.in_current_team] at @s run function bingo:item_detection/goals/completed_goal_effects
 
 data modify storage bingo:card teams[-1].hasBingo set value true
+
+#MCGEE_ADDITION
+# Bingo Type
+## Double Bingo
+scoreboard players set bit2 mcgee 1
+#END_MCGEE_ADDITION

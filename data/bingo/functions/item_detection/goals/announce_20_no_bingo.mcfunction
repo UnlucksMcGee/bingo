@@ -7,3 +7,9 @@
 
 tellraw @a {"translate": "bingo.got_20_no_bingo", "with": [{"storage": "neun_einser.timer:display", "nbt": "\"hh:mm:ss.s\"", "interpret": true}, {"selector": "@a[tag=bingo.in_current_team]"}]}
 execute as @a[tag=bingo.in_current_team] at @s run function bingo:item_detection/goals/completed_goal_effects
+
+#MCGEE_ADDITION
+# Bingo Type
+## 20 No Bingo Bingo
+scoreboard players set bit4 mcgee 1
+#END_MCGEE_ADDITION

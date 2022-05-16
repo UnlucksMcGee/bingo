@@ -1070,6 +1070,10 @@
 	gamerule maxCommandChainLength 262144
 	difficulty easy
 
+	#MCGEE_ADDITION
+	gamerule keepInventory true
+	#END_MCGEE_ADDITION
+
 # Init slow loops
 	function bingo:tick/clean_up
 

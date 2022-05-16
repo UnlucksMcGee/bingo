@@ -21,6 +21,11 @@
 #declare score_holder $item_detect/announce.items
 
 execute in bingo:lobby run function neun_einser.timer:store_current_time
+
+#MCGEE_ADDITION
+execute in bingo:lobby run function bingo:item_detection/goals/bingo/mcgee_functions/set_time_and_players
+#END_MCGEE_ADDITION
+
 scoreboard players reset @s bingo.has_item
 tag @s add bingo.clear
 
@@ -50,3 +55,33 @@ execute if score $item_detect/announce.has_bingo bingo.tmp matches 0 run functio
 execute if score $item_detect/announce.items bingo.tmp matches 25 run function bingo:item_detection/goals/announce_blackout
 
 scoreboard players set $update_card bingo.state 1
+
+#MCGEE_ADDITION
+# Check for invalid runs
+scoreboard players set invalid_run mcgee 0
+# Check for gamemode switch (player will have bingo.spectator tag if they switched gamemode)
+execute as @a[tag=bingo.in_current_team,tag=bingo.spectator] run scoreboard players set invalid_run mcgee 1
+
+# Determine if bingo was achieved
+scoreboard players set got_bingo mcgee 0
+execute if score $item_detect/bingo.row bingo.tmp matches 0 if score $item_detect/bingo.column bingo.tmp matches 0 if score $item_detect/bingo.diagonal bingo.tmp matches 0 if score $item_detect/announce.items bingo.tmp matches 20 run scoreboard players set got_bingo mcgee 1
+scoreboard players operation got_bingo mcgee += $item_detect/bingo.row bingo.tmp
+scoreboard players operation got_bingo mcgee += $item_detect/bingo.column bingo.tmp
+scoreboard players operation got_bingo mcgee += $item_detect/bingo.diagonal bingo.tmp
+execute if score got_bingo mcgee matches 1.. run scoreboard players set got_bingo mcgee 1
+
+# Mention invalid run - First bingo
+execute if score got_bingo mcgee matches 1.. if score invalid_run mcgee matches 1 if score $item_detect/announce.has_bingo bingo.tmp matches 0 unless score $item_detect/announce.items bingo.tmp matches 25 run tellraw @a "Run is invalid because of gamemode switch"
+# Mention invalid run - Blackout
+execute if score invalid_run mcgee matches 1 if score $item_detect/announce.items bingo.tmp matches 25 run tellraw @a "Run is invalid because of gamemode switch"
+
+# Announce that run is seeded, and may not be supported on leaderboard yet, and set encoding version to 01
+execute if score seeded_run mcgee matches 1 run tellraw @a "This is a set-seed run, which might not be supported on the leaderboard yet"
+execute if score seeded_run mcgee matches 1 run scoreboard players set bit22 mcgee 0
+execute if score seeded_run mcgee matches 1 run scoreboard players set bit21 mcgee 1
+
+# Announce first bingo run ID
+execute unless score invalid_run mcgee matches 1 if score got_bingo mcgee matches 1.. if score $item_detect/announce.has_bingo bingo.tmp matches 0 unless score $item_detect/announce.items bingo.tmp matches 25 in bingo:lobby run function bingo:item_detection/goals/bingo/mcgee_functions/announce_run_id
+# Announce Blackout run ID
+execute unless score invalid_run mcgee matches 1 if score $item_detect/announce.items bingo.tmp matches 25 in bingo:lobby run function bingo:item_detection/goals/bingo/mcgee_functions/announce_run_id
+#END_MCGEE_ADDITION

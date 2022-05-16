@@ -16,6 +16,14 @@ clear @s
 gamemode survival @s
 experience set @s 0 levels
 experience set @s 0 points
+
+#MCGEE_ADDITION
+replaceitem entity @s hotbar.0 minecraft:stone_sword 1
+replaceitem entity @s hotbar.1 minecraft:stone_pickaxe 1
+replaceitem entity @s hotbar.2 minecraft:stone_axe 1
+replaceitem entity @s hotbar.3 minecraft:stone_shovel 1
+#END_MCGEE_ADDITION
+
 gamerule doDaylightCycle true
 
 execute in bingo:lobby run data modify block 5 3 5 auto set value true

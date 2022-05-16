@@ -23,6 +23,13 @@ clear @s
 experience set @s 0 levels
 experience set @s 0 points
 
+#MCGEE_ADDITION
+replaceitem entity @s hotbar.0 minecraft:stone_sword 1
+replaceitem entity @s hotbar.1 minecraft:stone_pickaxe 1
+replaceitem entity @s hotbar.2 minecraft:stone_axe 1
+replaceitem entity @s hotbar.3 minecraft:stone_shovel 1
+#END_MCGEE_ADDITION
+
 tag @s remove bingo.has_slot0
 tag @s remove bingo.has_slot1
 tag @s remove bingo.has_slot2

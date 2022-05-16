@@ -14,3 +14,14 @@ execute if score $item_detect/announce.items bingo.tmp matches 17 if score $item
 execute as @a[tag=bingo.in_current_team] at @s run function bingo:item_detection/goals/completed_goal_effects
 
 data modify storage bingo:card teams[-1].hasBingo set value true
+
+#MCGEE_ADDITION
+# Bingo Type
+## Quadruple Bingo
+execute if score $item_detect/bingo.diagonal bingo.tmp matches 3 run scoreboard players set bit3 mcgee 1
+execute if score $item_detect/bingo.diagonal bingo.tmp matches 3 run scoreboard players set bit2 mcgee 1
+
+## Triple Bingo
+execute if score $item_detect/bingo.diagonal bingo.tmp matches 1 run scoreboard players set bit3 mcgee 1
+execute if score $item_detect/bingo.diagonal bingo.tmp matches 2 run scoreboard players set bit3 mcgee 1
+#END_MCGEE_ADDITION
