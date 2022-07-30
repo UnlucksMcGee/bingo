@@ -14,5 +14,8 @@ scoreboard players reset @s bingo.spectator
 scoreboard players reset @s bingo.resources
 
 tag @s remove bingo.spectator
+scoreboard players set @s bingo.update_hud 1
 
 gamemode survival
+
+schedule function bingo:lobby/place_indestructible_blocks 1t replace

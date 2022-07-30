@@ -14,14 +14,13 @@
 
 function bingo:game/end
 
-scoreboard players operation $seed bingo.state = $seed nn.math.rand
+scoreboard players operation $seed bingo.state = $rand.seed 91.math.io
+scoreboard players set $update_card bingo.state 1
 
 #>
 # The slot which is currently being generated
 #
-# @within
-# 	function bingo:card_generation/generate_card
-# 	function bingo:card_generation/generate_slot
+# @within function bingo:card_generation/**
 #declare score_holder $card_gen.slot
 scoreboard players set $card_gen.slot bingo.tmp 0
 #>
@@ -41,19 +40,20 @@ scoreboard players operation $card_gen.total_weight bingo.tmp = $total_item_weig
 scoreboard players operation $card_gen.available_category_weight bingo.tmp = $available_category_weight bingo.state
 #>
 # Tag used for temporary entity used for positional command execution to set
-# lobby comand block's commands
+# lobby command block's commands
 #
 # @within
 # 	function bingo:card_generation/generate_card
 # 	function bingo:card_generation/generate_slot
+# 	function bingo:card_generation/set_commands
 #declare tag bingo.command_cloud
 data modify storage tmp.bingo:card_generation items set from storage bingo:items activeItems
 data remove storage bingo:card slots
 execute in bingo:lobby run summon minecraft:area_effect_cloud 0 0 0 {Tags: ["bingo.command_cloud"]}
-function bingo:card_generation/generate_slot
+execute in minecraft:overworld positioned 0 0 0 as @e[type=minecraft:area_effect_cloud, tag=bingo.string_tester, distance=..0.1, limit=1] run function bingo:card_generation/generate_slot
 
-function nope_name.math:rand/exe
-execute store result storage bingo:card spawnLocation int 1 run scoreboard players get $out nn.math.rand
+function neun_einser.math:random/next_int
+execute store result storage bingo:card spawnLocation int 1 run scoreboard players get $rand.seed 91.math.io
 execute if score $automatically_pregen bingo.settings matches 1 run schedule function bingo:game/start/locate_spawnpoint 5s
 
 # Reset teams
@@ -75,4 +75,11 @@ data modify storage bingo:card teams append value {id: "bingo:red", completedBor
 data modify storage bingo:card teams append value {id: "bingo:white", completedBorder: '{"text": "\\uFFFE", "color": "white"}', slots:['"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"']}
 data modify storage bingo:card teams append value {id: "bingo:yellow", completedBorder: '{"text": "\\uFFFE", "color": "yellow"}', slots:['"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"', '"\\uFFFF"']}
 
-scoreboard players set $update_card bingo.state 1
+execute as @e[tag=bingo.card_frame, scores={bingo.frame_id=12}, limit=1] at @s run playsound minecraft:entity.item_frame.add_item voice @a ~ ~ ~ 1 0.8
+
+bossbar set bingo:start/pre_gen/progress visible false
+
+#>
+# @api
+#declare tag/function bingo:post_card_gen
+function #bingo:post_card_gen

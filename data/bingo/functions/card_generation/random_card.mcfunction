@@ -4,7 +4,7 @@
 #
 # @within function bingo:lobby/settings/random_seed_strict_mode_check
 
-function nope_name.math:rand/set_random_seed
+function neun_einser.math:random/set_random_seed
 function bingo:card_generation/generate_card
 
 #MCGEE_ADDITION

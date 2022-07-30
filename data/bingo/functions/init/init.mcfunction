@@ -11,6 +11,9 @@
 # @within tag/function minecraft:load
 # @handles #minecraft:load
 
+setworldspawn 1 0 1
+forceload add 0 0
+
 #TODO change to use tmp.bingo:<name> everywhere
 #declare storage bingo:tmp
 
@@ -29,12 +32,12 @@
 	# containing the full item definition, like in the items array.
 	#
 	# Items have the following NBT structure:
-	# id: (String) custom namespaced id to uniquly identify the item within bingo
+	# id: (String) custom namespaced id to uniquely identify the item within bingo
 	# item: (Compound) Minecraft item data. Should be set in such a way, that an
 	# 	item of this type looks exactly the same as the item you require.
 	# textComponent: (String) The text component that is used for displaying the
 	# 	item name.
-	# icon: (String) Parsable text component that holds a charcter which is re-
+	# icon: (String) Parsable text component that holds a character which is re-
 	# 	textured to look like the item you require
 	# detectCommand: (String) Command for detecting if the player has this item.
 	# 	Has to set the player's bingo.has_item score. The command that is used in
@@ -45,13 +48,13 @@
 	# 	inventory. Should look like this: "clear @a[tag=bingo.clear] <item> 1
 	# categories: (String List) List of category names. All categories referenced
 	# 	here should be registered separately.
-	# weight: (Integer) Weight of this item for the rng.
+	# weight: (Integer) Weight of this item for the RNG.
 	#
 	# Categories have the following structure:
-	# name: (String) Namespaced id to uniquly identify the category within bingo
-	# translateableName: (String) Text component used for displaying the category's
+	# name: (String) Namespaced id to uniquely identify the category within bingo
+	# translatableName: (String) Text component used for displaying the category's
 	# 	name
-	# items: (Compund List) (readonly) List of all items this category has. Entries
+	# items: (Compound List) (readonly) List of all items this category has. Entries
 	# 	have the same structure as in the items array. Will be created
 	# 	automatically, after #bingo:post_register_items ran.
 	#
@@ -109,6 +112,16 @@
 
 #region tag declarations
 	#>
+	# This tag marks a player who is at a location eligible for emerald generation.
+	#
+	# @internal
+	#declare tag bingo.emerald
+	#>
+	# This tag is used for players who enable manual gamemode switching.
+	#
+	# @internal
+	#declare tag bingo.enable_manual_gamemode_switch
+	#>
 	# This tag is used to tag the item frames that display the big preview card in
 	# the lobby
 	#
@@ -121,30 +134,35 @@
 	# @internal
 	#declare tag bingo.clear
 	#>
-	# This tag marks a player who is at a location eligible for emerald generation.
-	#
-	# @internal
-	#declare tag bingo.emerald
-	#>
 	# This tag is used for the area effect cloud marking the location for the skybox
 	#
 	# @internal
 	#declare tag bingo.skybox_cloud
-	#>
-	# This tag is given to players who are currently verifying their resource pack
-	#
-	# @internal
-	#declare tag bingo.resourcepack_check
 	#>
 	# This tag is given to any player who triggered bingo.spectator in game.
 	#
 	# @internal
 	#declare tag bingo.spectator
 	#>
-	# This tag is used for players who enable manual gamemode switching.
+	# This tag marks an AEC which may be used for testing wether a string is
+	# within a certain set.
 	#
 	# @internal
-	#declare tag bingo.enable_manual_gameode_switch
+	#declare tag bingo.string_tester
+	kill @e[type=minecraft:area_effect_cloud, tag=bingo.string_tester]
+	summon minecraft:area_effect_cloud 0 0 0 {Age: -2147483648, Duration: -1, WaitTime: -2147483648, Tags: ["bingo.string_tester"]}
+	#>
+	# Tag for entities that where already persistent.
+	#
+	# @within
+	# 	function bingo:game/start/pre_gen/handle_entities
+	# 	function bingo:game/start/unfreeze_entities
+	#declare tag bingo.persistance_required
+	#>
+	# This tag is given to players who are currently verifying their resource pack
+	#
+	# @internal
+	#declare tag bingo.resourcepack_check
 	#region slots
 		#>
 		# This tag marks a player who is in a team that obtained the item in slot 0.
@@ -327,7 +345,7 @@
 		#region machinery
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	function bingo:init/setup_lobby
 			#declare tag bingo.sign_machinery
 		#endregion
@@ -335,156 +353,192 @@
 		#region credits
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_neun_einser
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_unlucks_mc_gee
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_kristof
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
-			# 	structure bingo:credits
-			#declare tag bingo.sign_credits_gbegerow
-			#>
-			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_amber_wat
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_nope_name
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_dr_brian_lorgon111
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_community_and_support
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_playtesters
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_silentrob
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_muffinshire
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_gothfaerie
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_zampone
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_thomas_to_space
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_craca_croes_gazyy
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_lifeofchrome
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tod_nl
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_no_leaf_clover
 
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_translators
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_german
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_polish
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_italian
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_dutch
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
+			# 	structure bingo:credits
+			#declare tag bingo.sign_credits_russian
+
+			#>
+			# @within
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_vscode
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_datapackhelperplus
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_multinoise
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_nbtexplorer
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_nbtstudio
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:credits
 			#declare tag bingo.sign_credits_tools_nbtviewer
 		#endregion
 
-		#region crad generation
+		#region card generation
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_team_selection
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_card_generation_crafting_table
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_card_generation_furnace
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_card_generation_random_card
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_card_generation_from_seed
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:card_generation
 			#declare tag bingo.sign_card_generation_start_game
 		#endregion
@@ -492,92 +546,92 @@
 		#region tutorial & settings
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_settings_more_coming
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_settings_automatic_pregen
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_settings_strict_mode
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_settings_preferences
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_generate_chests
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_generate_chests
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics1
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics2
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics3
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics4
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics5
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_basics6
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_skybox
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_get_tools
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_game_info
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_goal_lectern
 			#>
 			# @within
-			# 	function bingo:lobby/place_indestructible_blocks
+			# 	function bingo:lobby/place_sign
 			# 	structure bingo:tutorial
 			#declare tag bingo.sign_tutorial_game_info_lectern
 		#endregion
@@ -592,79 +646,79 @@
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_red
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_orange
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_yellow
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_lime
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_green
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_cyan
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_light_blue
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_blue
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_purple
 		#>
 		# @within
 		# 	function bingo:lobby/place_indestructible_blocks
-		# 	function bingo:lobby/press_button
 		# 	structure bingo:card_generation
 		#declare tag bingo.button_magenta
 	#endregion
 #endregion
 
+#>
+# @private
+#declare tag bingo.detect_mp_aec
+kill @e[type=minecraft:area_effect_cloud, tag=bingo.detect_mp_aec, limit=1]
+summon minecraft:area_effect_cloud 0 0 0 {CustomName:'{"translate": "bingo.technical.detect_multiplayer"}', Age: -2147483648, Duration: -1, WaitTime: -2147483648, Tags: ["bingo.detect_mp_aec"]}
+
 #region setup objectives
+	scoreboard objectives remove bingo.chicken
 	scoreboard objectives remove bingo.const
+	scoreboard objectives remove bingo.fireworks
 	scoreboard objectives remove bingo.has_item
 	scoreboard objectives remove bingo.hud_update
 	scoreboard objectives remove bingo.io
 	scoreboard objectives remove bingo.lobby
+	scoreboard objectives remove bingo.menu
 	scoreboard objectives remove bingo.menu_page
 	scoreboard objectives remove bingo.pos_hash
+	scoreboard objectives remove bingo.pref
+	scoreboard objectives remove bingo.prev_y_pos
 	scoreboard objectives remove bingo.seed
 	scoreboard objectives remove bingo.spectator
 	scoreboard objectives remove bingo.resources
 	scoreboard objectives remove bingo.tmp
-	scoreboard objectives remove bingo.pref
 
 	#region public objectives
 		#>
@@ -720,6 +774,13 @@
 		scoreboard objectives add bingo.lobby trigger
 
 		#>
+		# Trigger objective for displaying the bingo menu during a game.
+		#
+		# @internal
+		# @user
+		scoreboard objectives add bingo.menu trigger
+
+		#>
 		# Trigger objective used to handle changes / clicks in the preferences menu.
 		#
 		# @internal
@@ -760,11 +821,22 @@
 
 	#region other internal objectives
 		#>
+		# Used to store chicken egg timers during pre-gen
+		#
+		# @internal
+		scoreboard objectives add bingo.chicken dummy
+		#>
 		# This objective holds the position preference of where a player's card should
 		# be displayed.
 		#
 		# @internal
 		scoreboard objectives add bingo.card_pos dummy
+
+		#>
+		# This objective contains the index for the completed goal effect per player
+		#
+		# @internal
+		scoreboard objectives add bingo.fireworks dummy
 
 		#>
 		# This objective contains unique IDs for the item frames in the lobby.
@@ -806,8 +878,8 @@
 		scoreboard objectives add bingo.id dummy
 
 		#>
-		# This objective stores the page of a paginated tellraw a player is currently
-		# at.
+		# This objective stores the page number of a paginated tellraw
+		# a player is currently at.
 		#
 		# This is for example used for the preferences menu. It would otherwise be
 		# impossible to display a generated list with clickable items, as the score
@@ -817,6 +889,12 @@
 		#
 		# @internal
 		scoreboard objectives add bingo.menu_page dummy
+
+		#>
+		# This objective contains the y coordinate of entities in the previous tick
+		#
+		# @internal
+		scoreboard objectives add bingo.prev_y_pos dummy
 
 		#>
 		# This objective is used to store information for scheduled events
@@ -834,14 +912,14 @@
 	#region private objectives
 		#>
 		# This objective is used to store the player's position hash, which in turn
-		# is used to determine wether the player position display needs updating
+		# is used to determine whether the player position display needs updating
 		# @within
 		#		function bingo:init/init
 		#		function bingo:custom_hud/components/player_position/*
 		scoreboard objectives add bingo.pos_hash dummy
 
 		#>
-		# The last time the hud was refeshed for each player
+		# The last time the hud was refreshed for each player
 		# #TODO rename to something like "last_hud_update" in 1.18 when the stupid
 		# # length limit is gone.
 		#
@@ -863,6 +941,8 @@
 
 	#region score holders
 		#>
+		# Whether command blocks are enabled
+		#
 		# @internal
 		#declare score_holder $commandblocks_enabled
 		scoreboard players set $commandblocks_enabled bingo.state 0
@@ -872,7 +952,7 @@
 		#>
 		# The current game state
 		# 0 = Lobby / Not in game
-		# 1 = Starting / chunk-gen
+		# 1 = Starting / chunk pre-gen
 		# 2 = Skybox phase
 		# 3 = Game started
 		#
@@ -886,7 +966,7 @@
 		#declare score_holder $is_multiplayer
 		scoreboard players add $is_multiplayer bingo.state 0
 		#>
-		# The status of pregeneration.
+		# The status of chunk pregeneration.
 		# 0 = not started
 		# 1 = started
 		# 2 = completed
@@ -1023,16 +1103,20 @@
 		scoreboard players set 41 bingo.const 41
 		#>
 		# @public
+		#declare score_holder 96
+		scoreboard players set 96 bingo.const 96
+		#>
+		# @public
 		#declare score_holder 100
 		scoreboard players set 100 bingo.const 100
 		#>
 		# @public
-		#declare score_holder 256
-		scoreboard players set 256 bingo.const 256
+		#declare score_holder 128
+		scoreboard players set 128 bingo.const 128
 		#>
 		# @public
-		#declare score_holder 512
-		scoreboard players set 512 bingo.const 512
+		#declare score_holder 256
+		scoreboard players set 256 bingo.const 256
 		#>
 		# @public
 		#declare score_holder 1000
@@ -1045,14 +1129,7 @@
 #endregion
 
 # Create overworld resourcepack check
-	#>
-	# @private
-	#declare tag bingo.detect_mp_aec
-
-	kill @e[type=minecraft:area_effect_cloud, tag=bingo.detect_mp_aec, limit=1]
-	summon minecraft:area_effect_cloud ~ ~ ~ {CustomName:'{"translate": "bingo.technical.detect_multiplayer"}', Age: -2147483648, Duration: -1, WaitTime: -2147483648, Tags: ["bingo.detect_mp_aec"]}
 	fill 0 0 0 2 3 2 minecraft:black_concrete outline
-	setworldspawn 1 0 1
 	gamerule spawnRadius 0
 
 # Add pregen bossbar
@@ -1067,7 +1144,6 @@
 	gamerule doTraderSpawning false
 	gamerule disableElytraMovementCheck true
 	gamerule doPatrolSpawning false
-	gamerule maxCommandChainLength 262144
 	difficulty easy
 
 	#MCGEE_ADDITION
@@ -1075,7 +1151,7 @@
 	#END_MCGEE_ADDITION
 
 # Init slow loops
-	function bingo:tick/clean_up
+	schedule function bingo:tick/clean_up 1s replace
 
 # setup default player configurations
 	#data remove storage bingo:player configurations
@@ -1165,7 +1241,7 @@
 	# items are duplicated into the categories array.
 	#
 	# You may use this function tag for modifing existing items from the default
-	# bingo item pool or from other extensio packs.
+	# bingo item pool or from other extension packs.
 	#
 	# @api
 	#declare tag/function bingo:post_registration
@@ -1176,19 +1252,8 @@
 	# @within function bingo:init/**
 	#declare storage tmp.bingo:init
 
-	# initialize items
-	data modify storage tmp.bingo:init items set from storage bingo:registries items
-	data modify storage bingo:items categories set from storage bingo:registries categories
-	data remove storage bingo:items items
-
-	function bingo:init/items/first_pass
-	function bingo:init/items/second_pass
-	
-	execute unless data storage bingo:items activeTags run data modify storage bingo:items activeTags set value ["bingo:default"]
-	# Schedule to avoid maxCommandChainLength being hit (setting it in init doesn't work the first time)
-	schedule function bingo:util/apply_active_item_tags 1t
+	schedule function bingo:init/items/exec 1t
 #endregion
-
 #region initialize hud components
 	#>
 	# @within
@@ -1200,6 +1265,7 @@
 	data modify storage tmp.bingo:init/hud columns set value [[], []]
 	data modify storage tmp.bingo:init/hud whereSpace set value []
 	data modify storage tmp.bingo:init/hud unpreferred set value []
+	data modify storage tmp.bingo:init/hud dontAdd set value []
 	function bingo:init/initialize_hud_components/add_defaults
 	data modify storage tmp.bingo:init/hud whereSpace append from storage tmp.bingo:init/hud unpreferred[]
 
@@ -1207,6 +1273,7 @@
 	data modify storage bingo:custom_hud components append from storage tmp.bingo:init/hud columns[0][]
 	data modify storage bingo:custom_hud components append from storage tmp.bingo:init/hud columns[1][]
 	data modify storage bingo:custom_hud components append from storage tmp.bingo:init/hud whereSpace[]
+	data modify storage bingo:custom_hud components append from storage tmp.bingo:init/hud dontAdd[]
 
 	data modify storage bingo:custom_hud default set value []
 	data modify storage bingo:custom_hud default append from storage tmp.bingo:init/hud columns[0][0]
@@ -1216,7 +1283,7 @@
 	data modify storage bingo:custom_hud default append from storage tmp.bingo:init/hud columns[0][4]
 	execute unless data storage bingo:custom_hud default[4] run function bingo:init/initialize_hud_components/fill_default_col0
 	
-	execute unless data storage tmp.bingo:init/hud columns[1][5] run data modify storage bingo:custom_hud default append value {id: "bingo:spacer", name: '{"translate": "bingo.custom_hud.components.spacer"}', padding: '{"translate": "space.91"}'}
+	execute unless data storage tmp.bingo:init/hud columns[1][5] run data modify storage bingo:custom_hud default append value {id: "bingo:spacer", name: '{"translate": "bingo.custom_hud.components.spacer"}', padding: '{"translate": "space.91"}', slot_id: 5b}
 	data modify storage bingo:custom_hud default append from storage tmp.bingo:init/hud columns[1][0]
 	data modify storage bingo:custom_hud default append from storage tmp.bingo:init/hud columns[1][1]
 	data modify storage bingo:custom_hud default append from storage tmp.bingo:init/hud columns[1][2]
