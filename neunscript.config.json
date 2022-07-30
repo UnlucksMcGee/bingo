@@ -3,7 +3,7 @@
 	"version": "5.0",
 	"target": "dist",
 	"vars": {
-		"version_long_name": "5.0",
+		"version_long_name": "5.0 (UnlucksMcGee Edit)",
 		"rp_version": "9"
 	},
 	"remove_file_types": [

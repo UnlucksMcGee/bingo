@@ -20,13 +20,14 @@ execute at @s align y if block ~ ~1 ~ minecraft:void_air run tp ~ ~1 ~
 execute at @s if block ~ ~ ~ minecraft:void_air run effect give @s minecraft:levitation 1 255 true
 execute at @s unless block ~ ~ ~ minecraft:void_air run effect clear @s minecraft:levitation
 
-# generate card from seed
-execute if score @s bingo.seed matches -2147483648.. unless score @s bingo.seed matches 0 run function bingo:card_generation/generate_from_seed
-
 #MCGEE_ADDITION
+# Must be run before below generation
 scoreboard objectives add mcgee dummy
 execute if score @s bingo.seed matches -2147483648.. unless score @s bingo.seed matches 0 run scoreboard players set seeded_run mcgee 1
 #END_MCGEE_ADDITION
+
+# generate card from seed
+execute if score @s bingo.seed matches -2147483648.. unless score @s bingo.seed matches 0 run function bingo:card_generation/generate_from_seed
 
 scoreboard players reset @s bingo.seed
 execute unless score $strict_mode bingo.settings matches 1 run scoreboard players enable @s bingo.seed

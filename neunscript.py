@@ -222,7 +222,7 @@ def minify_function_file(file_content: str):
 							pass
 	return output
 
-def copy_pack(pack_config: dict, tmp_dir: str, paths: list[str] | None):
+def copy_pack(pack_config: dict, tmp_dir: str, paths):
 	os.makedirs(tmp_dir)
 	src=pack_config.get("path")
 	if src == None:

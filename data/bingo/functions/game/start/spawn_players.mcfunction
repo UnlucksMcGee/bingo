@@ -5,6 +5,10 @@
 # @within function bingo:game/start/spawn_skybox
 # @context entity Current player
 
+#MCGEE_ADDITION
+tellraw @s "Note: This datapack edit by UnlucksMcGee cannot be used for official speedrun submissions. See the original by NeunEinser for that."
+#END_MCGEE_ADDITION
+
 tellraw @s ["[", {"text":"≡", "color":"#00c3ff", "clickEvent":{"action":"run_command", "value":"/trigger bingo.menu"}, "hoverEvent":{"action":"show_text", "contents":{"translate":"bingo.game.menu.hover_text"}}}, "] ", {"translate": "bingo.game.start.loading_terrain"}]
 scoreboard players operation @s bingo.game_id = $current_game_id bingo.game_id
 teleport @s ~ 128 ~

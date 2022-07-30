@@ -76,7 +76,7 @@ execute if score got_bingo mcgee matches 1.. if score invalid_run mcgee matches 
 execute if score invalid_run mcgee matches 1 if score $item_detect/announce.items bingo.tmp matches 25 run tellraw @a "Run is invalid because of gamemode switch"
 
 # Announce that run is seeded, and may not be supported on leaderboard yet, and set encoding version to 01
-execute if score seeded_run mcgee matches 1 run tellraw @a "This is a set-seed run, which might not be supported on the leaderboard yet"
+execute if score seeded_run mcgee matches 1 run tellraw @a "Note: This is a set-seed run, which is not supported on the leaderboard."
 execute if score seeded_run mcgee matches 1 run scoreboard players set bit22 mcgee 0
 execute if score seeded_run mcgee matches 1 run scoreboard players set bit21 mcgee 1
 
