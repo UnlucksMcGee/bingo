@@ -34,7 +34,8 @@ scoreboard players set const2pow22 mcgee 4194304
 
 # Bits
 ## Encoding Version
-scoreboard players set bit22 mcgee 0
+# 0 = old, 1 = seeded, 2 = valid (below), 3 = invalid
+scoreboard players set bit22 mcgee 1
 scoreboard players set bit21 mcgee 0
 
 ## Time
